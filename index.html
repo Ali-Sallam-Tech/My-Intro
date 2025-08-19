@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ali Faisal Mohammed Sallam - Introduction</title>
+    <style>
+        :root {
+            --background: #000;
+            --foreground: #fff;
+            --card-bg: rgba(20, 20, 20, 0.7);
+        }
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            overflow-x: hidden;
+        }
+        #stars {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            display: block;
+        }
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 56px 0 36px 0;
+            position: relative;
+            z-index: 1;
+            background: transparent;
+        }
+        .profile-img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 3px solid var(--foreground);
+            box-shadow: 0 0 26px var(--foreground);
+            margin-bottom: 20px;
+            object-fit: cover;
+        }
+        h1 {
+            font-size: 2.4em;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin: 0;
+            color: var(--foreground);
+        }
+        p.headline {
+            font-size: 1.1em;
+            margin: 16px 0 0 0;
+            color: var(--foreground);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        main {
+            max-width: 700px;
+            margin: 32px auto;
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: 0 2px 24px rgba(255,255,255,0.08);
+            padding: 36px 28px;
+            position: relative;
+            z-index: 1;
+        }
+        h2 {
+            color: var(--foreground);
+            font-size: 1.35em;
+            margin-top: 0;
+            margin-bottom: 18px;
+            letter-spacing: 1px;
+        }
+        .about-list {
+            font-size: 1em;
+            line-height: 1.7em;
+            color: var(--foreground);
+            margin-bottom: 22px;
+        }
+        .section-title {
+            margin-top: 32px;
+            margin-bottom: 8px;
+            font-size: 1.15em;
+            color: var(--foreground);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .info-table {
+            width: 100%;
+            margin: 0 auto 20px auto;
+            border-collapse: collapse;
+            font-size: 1em;
+        }
+        .info-table td {
+            padding: 6px 10px;
+            vertical-align: top;
+        }
+        .info-table .label {
+            font-weight: bold;
+            color: #ccc;
+            text-align: right;
+            width: 160px;
+        }
+        .info-table .value {
+            color: var(--foreground);
+        }
+        .list {
+            margin: 0 0 10px 0;
+            padding-left: 18px;
+            color: var(--foreground);
+        }
+        .list li {
+            margin-bottom: 6px;
+        }
+        .cv-download-section {
+            text-align: center;
+            margin: 20px 0 0 0;
+        }
+        .cv-download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 12px 28px;
+            font-size: 1.08em;
+            font-weight: 500;
+            color: var(--background);
+            background: var(--foreground);
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            margin-top: 10px;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .cv-download-btn:hover {
+            background: #eee;
+            color: #111;
+        }
+        .cv-icon {
+            width: 22px;
+            height: 22px;
+            vertical-align: middle;
+        }
+        footer {
+            text-align: center;
+            padding: 34px 0 12px 0;
+            background: transparent;
+            color: #ccc;
+            font-size: 1.05em;
+            position: relative;
+            z-index: 1;
+        }
+        .contact-info {
+            margin-bottom: 10px;
+            font-size: 1.09em;
+            color: var(--foreground);
+            line-height: 1.6em;
+        }
+        .contact-info span, .contact-info a {
+            color: var(--foreground);
+            text-decoration: underline;
+            margin-right: 8px;
+        }
+        .social-icons {
+            margin-top: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.07);
+            color: var(--foreground);
+            transition: background 0.2s, color 0.2s;
+            text-decoration: none;
+            font-size: 1.5em;
+        }
+        .social-icons a:hover {
+            background: var(--foreground);
+            color: var(--background);
+        }
+        @media (max-width: 800px) {
+            main {
+                max-width: 95vw;
+                padding: 20px 8vw;
+            }
+            .info-table .label {
+                width: 110px;
+            }
+            .cv-download-btn {
+                padding: 10px 14vw;
+                font-size: 1em;
+            }
+        }
+        .icon {
+            width: 24px;
+            height: 24px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="stars"></canvas>
+    <header>
+        <img src="assets/imgs/Untitlddded.png" alt="Ali Sallam Profile Photo" class="profile-img">
+        <h1>Ali Faisal Mohammed Sallam</h1>
+        <p class="headline"> AI Engineer | Sana'a, Yemen</p>
+    </header>
+    <main>
+        <h2>About Me</h2>
+        <div class="about-list">
+            <p>
+                Driven by a passion for AI and innovation, I combine programming, data analysis, and web development to craft solutions for real-world challenges. 
+                My journey is defined by a commitment to humanitarian values, shaped through volunteering with the Yemen Red Crescent Society—where collaboration under pressure and community support became second nature.
+            </p>
+            <p>
+                My aspiration is to channel this experience and my technical skills to contribute to transformative advancements in Yemen and beyond. Through opportunities like the Australia Awards Scholarships, I aim to refine my expertise and leave a lasting impact.
+            </p>
+        </div>
+        <div class="section-title">Education</div>
+        <table class="info-table">
+            <tr>
+                <td class="label">School</td>
+                <td class="value">Sana'a Advanced Private School – Sana'a, Yemen</td>
+            </tr>
+            <tr>
+                <td class="label">Certificate</td>
+                <td class="value">Secondary School Certificate – Scientific Section</td>
+            </tr>
+            <tr>
+                <td class="label">Graduated</td>
+                <td class="value">2024 | Seat No.: 620610</td>
+            </tr>
+        </table>
+        <div class="section-title">Certifications & Exams (Expected)</div>
+        <ul class="list">
+            <li>TOEFL iBT – YALI, Sana'a (Scheduled May 2025)</li>
+            <li>SAT Test – Tech Zone Institute (Planned Aug 2025)</li>
+            <li>ICDL Global Certification – BIM Masters Center (Expected May 2025)</li>
+            <li>Diploma in Web Design & Programming – BIM Masters Center (Expected Aug 2025)</li>
+        </ul>
+        <div class="section-title">Advanced Courses</div>
+        <ul class="list">
+            <li>Flutter Framework – Mobile App Development (Jul–Aug 2024)</li>
+            <li>Microsoft Power BI – Data Visualization & Analysis (Dec 2024–Jan 2025)</li>
+            <li>Programming Fundamentals (C++) (Sep 2024)</li>
+            <li>Python Programming – Basics & Applications (Oct–Nov 2024)</li>
+            <li>ICDL Local Certificate (Feb–Mar 2025)</li>
+            <li>Advanced Microsoft Excel – Data Analysis (Planned May 2025)</li>
+            <li>Cybersecurity Course – Fundamentals (Planned June 2025)</li>
+            <li>Mobile Programming – Android App Basics (Planned July 2025)</li>
+        </ul>
+        <div class="section-title">English Language Proficiency</div>
+        <table class="info-table">
+            <tr>
+                <td class="label">Institute</td>
+                <td class="value">Yemen-America Language Institute (YALI)</td>
+            </tr>
+            <tr>
+                <td class="label">Level</td>
+                <td class="value">Intermediate – Completed sequence from Basic to Level 7 (2024–2025)</td>
+            </tr>
+        </table>
+        <div class="section-title">Technical Skills</div>
+        <ul class="list">
+            <li>Programming: Python (Intermediate), C++ (Basic), Dart (Flutter)</li>
+            <li>Web Development: HTML, ASP.NET, API, C#</li>
+            <li>Data Analysis: Microsoft Excel (Advanced), Power BI</li>
+            <li>Office & Productivity: ICDL Certified, MS Office</li>
+        </ul>
+        <div class="section-title">Soft Skills</div>
+        <ul class="list">
+            <li>Teamwork & Collaboration</li>
+            <li>Creative Problem Solving</li>
+            <li>Strong Communication Skills</li>
+            <li>Commitment to Quality & Excellence</li>
+        </ul>
+       
+        <div class="section-title">Languages</div>
+        <ul class="list">
+            <li>Arabic: Native</li>
+            <li>English: Fluent</li>
+        </ul>
+        <!-- CV Download Button Section -->
+        <div class="cv-download-section">
+            <a class="cv-download-btn" href="assets/my C.V.pdf" download>
+                <svg class="cv-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 16.5l4-4h-3V3h-2v9.5H8l4 4zm-6 2.5v2h12v-2H6z"/>
+                </svg>
+                Download My CV
+            </a>
+            <p style="color: #ccc; font-size: 0.98em; margin-top: 4px;">(PDF, English)</p>
+        </div>
+    </main>
+    <footer>
+        <div class="contact-info">
+            <span><b>Contact:</b></span>
+            <span>Ali Faisal Mohammed Sallam</span><br>
+            <span>Sana'a, Yemen</span><br>
+            <span>Phone: <a href="tel:+967733121597">+967 733 121 597</a></span><br>
+            <span>Email: <a href="mailto:alisalllllam@gmail.com">alisalllllam@gmail.com</a></span><br>
+        </div>
+        <div class="social-icons">
+            <!-- GitHub -->
+            <a href="https://github.com/Ali-Sallam-Tech" target="_blank" aria-label="GitHub">
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.477 2 2 6.484 2 12.012c0 4.419 2.865 8.167 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.155-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.53 1.03 1.53 1.03.892 1.529 2.341 1.088 2.91.832.091-.646.35-1.088.636-1.339-2.222-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.447-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.563 9.563 0 0 1 12 6.844c.852.004 1.71.115 2.513.338 1.909-1.296 2.748-1.025 2.748-1.025.546 1.378.202 2.397.099 2.65.64.7 1.028 1.595 1.028 2.688 0 3.847-2.336 4.695-4.566 4.944.359.31.679.923.679 1.861 0 1.344-.012 2.427-.012 2.757 0 .268.18.579.688.481A10.025 10.025 0 0 0 22 12.012C22 6.484 17.523 2 12 2z"/>
+                </svg>
+            </a>
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/ali-sallam" target="_blank" aria-label="LinkedIn">
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 10.268h-3v-4.604c0-1.101-.021-2.518-1.535-2.518-1.537 0-1.772 1.199-1.772 2.438v4.684h-3v-9h2.879v1.229h.041c.401-.761 1.381-1.564 2.841-1.564 3.041 0 3.602 2.003 3.602 4.606v4.729z"/>
+                </svg>
+            </a>
+            <!-- Twitter/X -->
+            <a href="https://twitter.com/AliSallamTech" target="_blank" aria-label="Twitter/X">
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.53 6.47h2.47l-5.39 5.73 6.13 7.33h-4.84l-3.78-4.52-4.33 4.52H2.53l5.78-6.14-6-7.92h4.93l3.45 4.13 3.32-4.13zm-1.03 13.03h2.08l-7.05-8.44-6.88 8.44H4.69l7.07-8.44 6.78 8.44z"/>
+                </svg>
+            </a>
+            <!-- Email -->
+            <a href="mailto:alisalllllam@gmail.com" aria-label="Email">
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 13.065L1.801 6.317A2.199 2.199 0 0 1 3.2 4h17.6a2.199 2.199 0 0 1 1.399 2.317L12 13.065zm9.999-7.065c0-.552-.447-1-1-1H3c-.553 0-1 .448-1 1v14c0 .553.447 1 1 1h18c.553 0 1-.447 1-1V6zm-2 1.236l-7.999 5.332-7.999-5.332v10.764h16V7.236z"/>
+                </svg>
+            </a>
+        </div>
+        &copy; 2025 Ali Faisal Mohammed Sallam. Designed with minimalism in mind.
+    </footer>
+    <script>
+    // Moving stars background effect
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let stars = [];
+
+    function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        createStars();
+    }
+
+    function createStars() {
+        stars = [];
+        let starCount = Math.floor(width * height / 900); // density
+        for(let i=0; i<starCount; i++) {
+            stars.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                r: Math.random() * 1.2 + 0.3,
+                speed: Math.random() * 0.45 + 0.15,
+                opacity: Math.random() * 0.9 + 0.1
+            });
+        }
+    }
+
+    function drawStars() {
+        ctx.clearRect(0, 0, width, height);
+        for(let star of stars) {
+            ctx.globalAlpha = star.opacity;
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI);
+            ctx.fillStyle = "#fff";
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+    }
+
+    function animateStars() {
+        for(let star of stars) {
+            star.y += star.speed;
+            if(star.y > height) {
+                star.x = Math.random() * width;
+                star.y = 0;
+            }
+        }
+        drawStars();
+        requestAnimationFrame(animateStars);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+
+    resizeCanvas();
+    animateStars();
+    </script>
+</body>
+</html>
