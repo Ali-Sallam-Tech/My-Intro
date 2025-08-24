@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ali's TechMarket</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #111;
+      --secondary: #fff;
+      --accent: #222;
+      --transition: 0.18s cubic-bezier(.4,0,.2,1);
+    }
+    body {
+      margin: 0;
+      background: var(--secondary);
+      color: var(--primary);
+      font-family: 'Montserrat', Arial, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .layout {
+      display: flex;
+      min-height: 100vh;
+      background: var(--secondary);
+    }
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 99;
+      display: none;
+      transition: opacity 0.2s;
+    }
+    .sidebar {
+      width: 260px;
+      background: var(--primary);
+      color: var(--secondary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 38px 0 30px 0;
+      box-shadow: 2px 0 32px rgba(0,0,0,0.07);
+      position: fixed;
+      top: 0;
+      left: -270px;
+      height: 100vh;
+      z-index: 100;
+      transition: left 0.27s cubic-bezier(.4,0,.2,1);
+      /* Make sidebar scrollable inside */
+      overflow: hidden;
+    }
+    .sidebar.active {
+      left: 0;
+    }
+    .sidebar-inner {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #bbb #222;
+      padding-bottom: 24px;
+      /* For small handle drag experience */
+      cursor: grab;
+    }
+    /* Custom scroll bar for sidebar */
+    .sidebar-inner::-webkit-scrollbar {
+      width: 8px;
+      background: #222;
+      border-radius: 4px;
+    }
+    .sidebar-inner::-webkit-scrollbar-thumb {
+      background: #bbb;
+      border-radius: 6px;
+    }
+    .sidebar .close-btn {
+      align-self: flex-end;
+      margin-right: 20px;
+      margin-bottom: 20px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.7rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .sidebar .close-btn:hover { color: #aaa; }
+    .sidebar .side-menu {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 44px;
+    }
+    .side-link {
+      width: 100%;
+      padding: 14px 32px;
+      text-align: left;
+      background: none;
+      border: none;
+      color: var(--secondary);
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+      border-left: 5px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .side-link.active, .side-link:hover {
+      background: var(--accent);
+      color: #fff;
+      border-left: 5px solid #fff;
+    }
+    .sidebar .language-btn {
+      width: 80%;
+      background: var(--secondary);
+      color: var(--primary);
+      font-weight: 700;
+      border: none;
+      padding: 12px 0;
+      border-radius: 19px;
+      font-size: 1.05rem;
+      cursor: pointer;
+      margin: 10px 0 28px 0;
+      transition: background var(--transition), color var(--transition), border var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 2px solid transparent;
+    }
+    .sidebar .language-btn:hover {
+      background: var(--primary);
+      color: var(--secondary);
+      border: 2px solid var(--secondary);
+    }
+    .sidebar .auth-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 80%;
+      margin-top: auto;
+      margin-bottom: 10px;
+    }
+    .sidebar .auth-btn {
+      background: #fff;
+      color: #111;
+      font-weight: 700;
+      border: none;
+      padding: 11px 0;
+      border-radius: 19px;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+    }
+    .sidebar .auth-btn:hover {
+      background: #e2e2e2;
+    }
+    .hamburger {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      margin-right: 26px;
+      margin-left: 0;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      z-index: 110;
+    }
+    .hamburger:hover { color: #bbb; }
+    @media (min-width: 900px) {
+      .sidebar {
+        left: -270px;
+      }
+      .sidebar.active {
+        left: 0;
+      }
+      .sidebar-overlay {
+        display: none;
+      }
+    }
+    @media (max-width: 900px) {
+      .sidebar {
+        width: 78vw;
+        max-width: 320px;
+        left: -90vw;
+      }
+      .sidebar.active {
+        left: 0;
+      }
+    }
+    @media (min-width: 900px) {
+      .sidebar,
+      .sidebar-overlay {
+        position: fixed;
+        left: -270px;
+        top: 0;
+        height: 100vh;
+        z-index: 100;
+      }
+    }
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    header {
+      background: var(--primary);
+      color: var(--secondary);
+      padding: 26px 54px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 12px rgba(0,0,0,0.10);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .logo {
+      font-size: 2.3rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--secondary);
+      margin-left: 0;
+    }
+    nav {
+      display: flex;
+      gap: 18px;
+    }
+    .nav-btn {
+      background: var(--secondary);
+      color: var(--primary);
+      border: none;
+      padding: 11px 32px;
+      border-radius: 22px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition), border var(--transition);
+      border: 2px solid transparent;
+    }
+    .nav-btn.home-btn {
+      background: var(--secondary);
+      color: var(--primary);
+    }
+    .nav-btn.home-btn.active,
+    .nav-btn.home-btn:active {
+      background: var(--primary);
+      color: var(--secondary);
+      border: 2px solid var(--secondary);
+    }
+    .nav-btn:not(.home-btn):hover,
+    .nav-btn:not(.home-btn):focus {
+      background: var(--primary);
+      color: var(--secondary);
+      border: 2px solid var(--secondary);
+    }
+    .nav-btn.home-btn:hover,
+    .nav-btn.home-btn:focus {
+      background: var(--primary);
+      color: var(--secondary);
+      border: 2px solid var(--secondary);
+    }
+    .hero {
+      text-align: center;
+      padding: 74px 18px 42px 18px;
+      background: linear-gradient(90deg, #111 60%, #222 100%);
+      color: #fff;
+      box-shadow: 0 4px 40px rgba(10,10,10,0.10);
+      border-radius: 0 0 54px 54px;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 14px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .hero p {
+      color: #e6e6e6;
+      font-size: 1.18rem;
+      margin: 0 auto 30px auto;
+      max-width: 600px;
+    }
+    .hero .cta-btn {
+      margin-top: 22px;
+      background: var(--secondary);
+      color: var(--primary);
+      border: none;
+      border-radius: 24px;
+      padding: 15px 40px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 36px rgba(255,255,255,0.03);
+      transition: background var(--transition), color var(--transition);
+    }
+    .hero .cta-btn:hover {
+      background: var(--primary);
+      color: var(--secondary);
+      border: 2px solid var(--secondary);
+    }
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 52px 0 18px 0;
+      letter-spacing: 1.2px;
+      color: var(--primary);
+      text-transform: uppercase;
+    }
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 60px 20px;
+    }
+    .product-card {
+      background: var(--primary);
+      color: var(--secondary);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+      transition: transform var(--transition), box-shadow var(--transition);
+      display: flex;
+      flex-direction: column;
+      min-height: 430px;
+      position: relative;
+    }
+    .product-card:hover {
+      transform: translateY(-9px) scale(1.033);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.20);
+      z-index: 3;
+    }
+    .product-img {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      background: var(--secondary);
+      filter: brightness(0.95);
+      border-bottom: 2px solid #222;
+    }
+    .product-details {
+      padding: 22px 16px 16px 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .product-title {
+      font-size: 1.22rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .product-desc {
+      color: #e2e2e2;
+      font-size: 1.01rem;
+      margin-bottom: 9px;
+      min-height: 48px;
+    }
+    .product-price {
+      font-size: 1.13rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: #e8e8e8;
+      letter-spacing: 0.4px;
+    }
+    .add-btn {
+      background: var(--secondary);
+      color: var(--primary);
+      border: none;
+      border-radius: 18px;
+      padding: 10px 0;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition), border var(--transition);
+      margin-top: auto;
+      letter-spacing: 0.6px;
+    }
+    .add-btn:hover,
+    .add-btn:focus {
+      background: var(--primary);
+      color: var(--secondary);
+      border: 2px solid var(--secondary);
+    }
+    .badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: #fff;
+      color: #111;
+      padding: 4px 12px;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.09);
+      letter-spacing: 0.5px;
+    }
+    .follow-section {
+      background: var(--primary);
+      color: var(--secondary);
+      text-align: center;
+      padding: 42px 14px 30px 14px;
+      border-radius: 30px 30px 0 0;
+      margin-top: 60px;
+    }
+    .follow-title {
+      font-size: 1.33rem;
+      font-weight: 700;
+      margin-bottom: 9px;
+    }
+    .follow-btn {
+      margin-top: 10px;
+      background: var(--secondary);
+      color: var(--primary);
+      border: none;
+      border-radius: 22px;
+      padding: 13px 44px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 36px rgba(255,255,255,0.03);
+      transition: background var(--transition), color var(--transition);
+      letter-spacing: 0.8px;
+    }
+    .follow-btn:hover {
+      background: var(--primary);
+      color: var(--secondary);
+      border: 1.5px solid var(--secondary);
+    }
+    .social-links {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+    }
+    .social-link {
+      width: 38px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      color: #111;
+      border-radius: 50%;
+      font-size: 1.42rem;
+      text-decoration: none;
+      transition: background var(--transition), color var(--transition), box-shadow var(--transition);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+    }
+    .social-link:hover {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 18px rgba(255,255,255,0.17);
+    }
+    footer {
+      background: var(--primary);
+      color: var(--secondary);
+      text-align: center;
+      padding: 22px 8px 16px 8px;
+      font-size: 1.07rem;
+      margin-top: 0;
+      letter-spacing: 1px;
+      border-radius: 0 0 18px 18px;
+    }
+    @media (max-width: 900px) {
+      header { padding: 14px 8px; }
+      .logo { font-size: 1.3rem; }
+      .hero h1 { font-size: 1.5rem; }
+      .section-title { font-size: 1.1rem; }
+      .products { padding: 12px 4px; gap: 18px; }
+      .product-card { border-radius: 8px; min-height: 330px; }
+      .product-img { height: 120px; }
+      .follow-section { border-radius: 16px 16px 0 0; margin-top: 30px; }
+      footer { border-radius: 0 0 8px 8px; }
+    }
+  </style>
+  <!-- FontAwesome for Social Icons and Sidebar Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-inner" id="sidebarInner">
+        <button class="close-btn" id="sidebarClose" title="Close Menu"><i class="fas fa-times"></i></button>
+        <div class="side-menu">
+          <button class="side-link active"><i class="fas fa-home"></i> Home</button>
+          <button class="side-link"><i class="fas fa-box"></i> Shop</button>
+          <button class="side-link"><i class="fas fa-heart"></i> Wishlist</button>
+          <button class="side-link"><i class="fas fa-credit-card"></i> Payment</button>
+          <button class="side-link"><i class="fas fa-cog"></i> Settings</button>
+          <button class="side-link"><i class="fas fa-headset"></i> Support</button>
+        </div>
+        <!-- Language button -->
+        <button class="language-btn"><i class="fas fa-globe"></i> Language</button>
+        <div class="auth-btns">
+          <button class="auth-btn">Sign Up</button>
+          <button class="auth-btn">Log In</button>
+        </div>
+      </div>
+    </aside>
+    <div class="main-content">
+      <!-- Main Content -->
+      <header>
+        <div class="header-left">
+          <button class="hamburger" id="sidebarToggle" title="Open Menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <span class="logo">Ali's TechMarket</span>
+        </div>
+        <nav>
+          <button class="nav-btn home-btn active" id="homeNavBtn">Home</button>
+          <button class="nav-btn">Shop</button>
+          <button class="nav-btn">Contact</button>
+        </nav>
+      </header>
+      <div class="hero">
+        <h1>Discover the Latest in Tech</h1>
+        <p>Shop top-quality gadgets, real electronics, and stylish accessories. Designed to impress—minimal, modern, and truly professional.</p>
+        <button class="cta-btn">Start Shopping</button>
+      </div>
+      <div class="section-title">Featured Products</div>
+      <section class="products">
+        <div class="product-card">
+          <span class="badge">New</span>
+          <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80" alt="iPhone 15 Pro" class="product-img"/>
+          <div class="product-details">
+            <div class="product-title">iPhone 15 Pro</div>
+            <div class="product-desc">The latest Apple flagship. Sleek. Powerful. Professional.</div>
+            <div class="product-price">$999</div>
+            <button class="add-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <span class="badge">Bestseller</span>
+          <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80" alt="Samsung Galaxy S24" class="product-img"/>
+          <div class="product-details">
+            <div class="product-title">Samsung Galaxy S24</div>
+            <div class="product-desc">Stunning display, powerful camera, and all-day battery.</div>
+            <div class="product-price">$899</div>
+            <button class="add-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80" alt="Google Pixel 8 Pro" class="product-img"/>
+          <div class="product-details">
+            <div class="product-title">Google Pixel 8 Pro</div>
+            <div class="product-desc">Google's best phone yet, with AI-powered features.</div>
+            <div class="product-price">$799</div>
+            <button class="add-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80" alt="MacBook Air M3" class="product-img"/>
+          <div class="product-details">
+            <div class="product-title">MacBook Air M3</div>
+            <div class="product-desc">Ultra-thin, ultra-light, and ultra-fast Apple laptop.</div>
+            <div class="product-price">$1199</div>
+            <button class="add-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <span class="badge">Limited</span>
+          <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" alt="Leather Phone Case" class="product-img"/>
+          <div class="product-details">
+            <div class="product-title">Leather Phone Case</div>
+            <div class="product-desc">Premium leather case for modern phones. Stylish and protective.</div>
+            <div class="product-price">$39</div>
+            <button class="add-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <img src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=400&q=80" alt="Wireless AirPods Pro" class="product-img"/>
+          <div class="product-details">
+            <div class="product-title">Wireless AirPods Pro</div>
+            <div class="product-desc">Crystal clear sound, noise cancelling, and seamless connection.</div>
+            <div class="product-price">$249</div>
+            <button class="add-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <img src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=400&q=80" alt="Sony WH-1000XM5" class="product-img"/>
+          <div class="product-details">
+            <div class="product-title">Sony WH-1000XM5</div>
+            <div class="product-desc">Top-rated wireless headphones with industry-leading noise cancellation.</div>
+            <div class="product-price">$379</div>
+            <button class="add-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=400&q=80" alt="Dell XPS 13 Plus" class="product-img"/>
+          <div class="product-details">
+            <div class="product-title">Dell XPS 13 Plus</div>
+            <div class="product-desc">Premium Windows ultrabook, ultra-thin design, with vibrant display.</div>
+            <div class="product-price">$1249</div>
+            <button class="add-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <span class="badge">Hot</span>
+          <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80" alt="Samsung Galaxy Tab S9" class="product-img"/>
+          <div class="product-details">
+            <div class="product-title">Samsung Galaxy Tab S9</div>
+            <div class="product-desc">Large AMOLED display, S Pen included, perfect for work and play.</div>
+            <div class="product-price">$699</div>
+            <button class="add-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <img src="https://images.unsplash.com/photo-1517430816045-df4b7de11d1c?auto=format&fit=crop&w=400&q=80" alt="Apple Watch Series 9" class="product-img"/>
+          <div class="product-details">
+            <div class="product-title">Apple Watch Series 9</div>
+            <div class="product-desc">All-new health and fitness tracking, ultra-bright display.</div>
+            <div class="product-price">$499</div>
+            <button class="add-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <img src="https://images.unsplash.com/photo-1555617117-08e7c40c3c43?auto=format&fit=crop&w=400&q=80" alt="Anker PowerCore 20000" class="product-img"/>
+          <div class="product-details">
+            <div class="product-title">Anker PowerCore 20000</div>
+            <div class="product-desc">Ultra-high capacity portable charger. Charge on the go.</div>
+            <div class="product-price">$55</div>
+            <button class="add-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=400&q=80" alt="Logitech MX Master 3S" class="product-img"/>
+          <div class="product-details">
+            <div class="product-title">Logitech MX Master 3S</div>
+            <div class="product-desc">Ergonomic wireless mouse for productivity and creators.</div>
+            <div class="product-price">$99</div>
+            <button class="add-btn">Add to Cart</button>
+          </div>
+        </div>
+      </section>
+      <div class="follow-section">
+        <div class="follow-title">Stay Connected</div>
+        <p>Follow us for exclusive deals, new arrivals, and tech tips.</p>
+        <button class="follow-btn">Follow Us</button>
+        <div class="social-links">
+          <a class="social-link" href="https://facebook.com/" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a class="social-link" href="https://twitter.com/" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
+          <a class="social-link" href="https://instagram.com/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+          <a class="social-link" href="https://tiktok.com/" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        </div>
+      </div>
+      <footer>
+        © 2025 Ali's TechMarket. All rights reserved.
+      </footer>
+    </div>
+  </div>
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarClose = document.getElementById('sidebarClose');
+    // Home nav button interaction
+    const homeNavBtn = document.getElementById('homeNavBtn');
+    homeNavBtn.addEventListener('click', function () {
+      homeNavBtn.classList.add('active');
+      // remove active from others if necessary
+      document.querySelectorAll('.nav-btn:not(.home-btn)').forEach(btn => btn.classList.remove('active'));
+    });
+
+    function openSidebar() {
+      sidebar.classList.add('active');
+      sidebarOverlay.style.display = 'block';
+      setTimeout(() => { sidebarOverlay.style.opacity = "1"; }, 10);
+      document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('active');
+      sidebarOverlay.style.opacity = "0";
+      setTimeout(() => { sidebarOverlay.style.display = 'none'; }, 200);
+      document.body.style.overflow = '';
+    }
+    sidebarToggle.onclick = openSidebar;
+    sidebarClose.onclick = closeSidebar;
+    sidebarOverlay.onclick = closeSidebar;
+    // Hide sidebar on resize if over 900px
+    window.addEventListener('resize', () => {
+      if(window.innerWidth > 900) closeSidebar();
+    });
+
+    // Sidebar drag-to-scroll for vertical movement
+    const sidebarInner = document.getElementById('sidebarInner');
+    let isDragging = false;
+    let startY, scrollTop;
+
+    sidebarInner.addEventListener('mousedown', function(e) {
+      isDragging = true;
+      startY = e.pageY - sidebarInner.offsetTop;
+      scrollTop = sidebarInner.scrollTop;
+      sidebarInner.style.cursor = 'grabbing';
+    });
+    sidebarInner.addEventListener('mouseleave', function() {
+      isDragging = false;
+      sidebarInner.style.cursor = 'grab';
+    });
+    sidebarInner.addEventListener('mouseup', function() {
+      isDragging = false;
+      sidebarInner.style.cursor = 'grab';
+    });
+    sidebarInner.addEventListener('mousemove', function(e) {
+      if (!isDragging) return;
+      e.preventDefault();
+      const y = e.pageY - sidebarInner.offsetTop;
+      const walk = (startY - y);
+      sidebarInner.scrollTop = scrollTop + walk;
+    });
+
+    // For touch devices
+    let touchStartY = 0, touchScrollTop = 0;
+    sidebarInner.addEventListener('touchstart', function(e) {
+      isDragging = true;
+      touchStartY = e.touches[0].pageY;
+      touchScrollTop = sidebarInner.scrollTop;
+    });
+    sidebarInner.addEventListener('touchend', function() {
+      isDragging = false;
+    });
+    sidebarInner.addEventListener('touchmove', function(e) {
+      if (!isDragging) return;
+      const touchY = e.touches[0].pageY;
+      const walk = (touchStartY - touchY);
+      sidebarInner.scrollTop = touchScrollTop + walk;
+    });
+  </script>
+</body>
+</html>
